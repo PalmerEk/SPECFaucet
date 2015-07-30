@@ -1,0 +1,45 @@
+<div class="well">
+    <div class="payouts">
+        <h4>Rewards</h4>
+        <table class="table table-condensed">
+          <thead>
+            <th>Reward</th>
+            <th>Probability</th>
+          </thead>
+          {% for payout in settings.payout.bracket %}
+            <tr>
+              <td><em>{{(payout.pct*faucetBalance)|humanizeCrypto}}</em>&#160&#160SPEC</td>
+              <td>{{ payout.odds }}%</td>
+            </tr>
+          {% endfor %}
+        </table>
+        <h4>Faucet Balance: {{faucetBalance|humanizeCrypto}} SPEC</h4>
+    </div>
+
+            
+</div>
+
+<div class="well">
+    <center class="banner">
+      <div class='hidden-xs'>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle"
+         style="display:inline-block;width:160px;height:600px"
+         data-ad-client="{{ settings.ads.google.publisher }}"
+         data-ad-slot="{{ settings.ads.google.slots[1] }}"></ins>
+        <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+      <div class='visible-xs-block'>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle"
+         style="display:inline-block;width:300px;height:250px"
+         data-ad-client="{{ settings.ads.google.publisher }}"
+         data-ad-slot="{{ settings.ads.google.slots[3] }}"></ins>
+        <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    </center>
+</div>

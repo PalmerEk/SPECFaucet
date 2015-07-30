@@ -1,0 +1,155 @@
+{
+	"port": 3030
+	,"theme": "superhero"
+	,"stylesheet": ""
+
+	,"site": {
+	    "name": "Whoville SPEC Faucet",
+	    "subtitle": "A SPEC is a SPEC no matter how small",
+	    "url": "",
+	    "domain": ""
+  	}
+
+	,"rpc":{
+		"host":"localhost"
+		,"port":4320
+		,"user":"q9eBtox9fSXrjiMNexa8lcEU2YBGjS"
+		,"pass":"TOFkgQ3QaTDNMJLussnRJf8QG8dnLM"
+		,"timeout":30000
+		,"ssl":false
+		,"sslStrict":false
+		,"account":"faucet"
+	}
+
+	,"session": {
+	    "secret": "5ecretsR4Bi0tches",
+	    "key": "SPECFaucet"
+	 },
+	"googleAnalytics": "UA-20273012-7"
+
+	,"ads": {
+    "google": {
+      "publisher": "ca-pub-1143893861828278",
+      "slots": [
+        "3826054483",
+        "8395854884",
+        "9872588081",
+        "1155339288",
+        "9990765282"
+      ]
+    },
+    "amazon": {
+      "slots": [
+      ]
+    },
+    "adbit": {
+      "slots": [
+        "//adbit.co/adspace.php?a=L2Z5441IGDH5P",
+        "//adbit.co/adspace.php?a=R4OVCA42EFPM2",
+        "//adbit.co/adspace.php?a=4MDJM7HDKN0SS",
+        "//adbit.co/adspace.php?a=9AXEFFT2N7UK0"
+      ]
+    },
+    "anonymousAds": {
+      "slots": [
+        "60214",
+        "60216",
+        "61386",
+        "61387"
+      ]
+    },
+    "beeads": {
+      "slots": [
+        "3714"
+      ]
+    },
+    "affiliates": [
+      {
+        "type": "Casinos",
+        "referrals": [
+          {
+            "url": "https://www.999dice.com/?235714",
+            "name": "999Dice",
+            "description": "| 99.9% Dice Payout | Earn BTC/Doge/LTC with 50/50 Referral Program | Play & Chat"
+          },
+          {
+            "url": "https://www.casinobitco.in/r?u=5770",
+            "name": "Casino Bitco.in",
+            "description": "Live Sports Beting | Instant Deposits | Provably Fair",
+            "img": "https://www.casinobitco.in/img/Casino-Bitcoin-Ad-468x60.gif"
+          }
+        ]
+      }
+    ],
+
+    "faucets": {
+      "BUN": [
+        {
+          "url": "http://wemine.uk/BUN/",
+          "name": "Tricky's Faucet",
+          "description": "Tricky's Multi Faucet",
+          "img": "http://wemine.uk/images/BUN.png"
+        }
+      ],
+      "DOGE": [
+        {
+          "url": "http://freedoge.co.in/?r=72747",
+          "name": "FreeDoge.co.in",
+          "description": "FreeDoge.co.in",
+          "img": "http://static1.freedoge.co.in/banners/468x60-2.png"
+        }
+      ],
+      "BTC": [
+        {
+          "url": "http://moonbit.co.in/?ref=8ff2b8da5026",
+          "name": "moon bitcoin",
+          "description": "moon bitcoin",
+          "img": "http://moonbit.co.in/img/468x60.gif?v2"
+        },
+        {
+          "url": "http://faucet.bitcoinzebra.com/?ref=ca7a7bb1e4b6",
+          "name": "Bitcoin Zebra",
+          "description": "Bitcoin Zebra",
+          "img": "http://faucet.bitcoinzebra.com/img/banner_468x60.gif"
+        },
+        {
+          "url": "https://www.landofbitcoin.com/?r=8ICZVN0y0T8NqCAm",
+          "name": "Land of Bitcoin",
+          "description": "Land of Bitcoin",
+          "img": "http://static.landofbitcoin.com/img/instantly.png"
+        }
+      ]
+    }
+  }
+
+	,"show_wallet_balance": true
+	
+  ,"payout": {
+    "frequency": 60,
+    "referralPct": 25,
+    "adblockPenalty": 90,
+    "bracket": [
+      {"pct": 0.0001,"odds": 25.0},
+      {"pct": 0.0002,"odds": 25.0},
+      {"pct": 0.0003,"odds": 15.0},
+      {"pct": 0.0004,"odds": 15.0},
+      {"pct": 0.0005,"odds": 10.0},
+      {"pct": 0.0006,"odds": 5.0},
+      {"pct": 0.0007,"odds": 4.0},
+      {"pct": 0.0008,"odds": 0.5},
+      {"pct": 0.0009,"odds": 0.45},
+      {"pct": 0.001,"odds": 0.04},
+      {"pct": 0.0025, "odds": 0.01}
+    ]
+  }
+
+	,"database":{
+		"processor":"processor.db"
+		,"users":"users.db"
+	}
+	,"dashboard":{
+		"path":"/dashboard"
+		,"password":"welcome1"
+	}
+}
+

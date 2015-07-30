@@ -1,0 +1,112 @@
+<form action='.' method='POST'>
+        {% if success %}
+          <div class="form-group">
+            <div class="col-xs-12 alert alert-success" role="alert">
+              <div>You've been awarded {{dispenseAmt}} {{coinFaucet.currency}}!  {% if isTransfer %}Your {{coinFaucet.currency}} has been transfered directly into your <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> account and is waiting for you to become the next millionaire crypto currency trader!{% endif %}</div></br>
+              
+              {% if !referrer %}
+                <p>As an added bonus, an additional <em>{{settings.payoutSingleCoin.referralPct}}%<em> has been sent to <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade's</a> rainbot!  Thank you for helping out your fellow <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> traders.  Stop by the chatbox and let them know what a hero you are!</p>
+              {% endif %}
+
+              {% if settings.payoutSingleCoin.referralPct > 0 %}
+                <div>Earn {{settings.payoutSingleCoin.referralPct}}% of anyone you refer: <a href="{{referralURL}}">http://{{referralURL}}</a></div></br>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          
+          <div class='well'>
+            <h2>Looking for some free {{coinFaucet.currency}}?</h2>
+            <p>BleuFaucet is designed to work in conjunction with the secure, fast and reliable <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade Exchange.</a>  Payouts made directly to your <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> account.  Payouts will will be processed and paid out <em>INSTANTLY<em>! </p>
+
+            {#
+            <p>BleuFaucet is designed to work in conjunction with the secure, fast and reliable <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade Exchange.</a>  Payouts can be made to any valid {{coinFaucet.currency}} address <em>however</em> payouts made directly to your <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> account will recieve a <em>{{settings.payoutSingleCoin.bonusPct}}% bonus<em> and will be paid out <em>INSTANTLY<em>! </p>
+            #}
+
+            {% if !referrer %}
+            <hr />
+            <p>And that's not all!  An additional <em>{{settings.payoutSingleCoin.referralPct}}%<em> will be sent directly to <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade's</a> unique rainbot which distributes coins randomly to <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> users like yourself for simply using the chatbox while they trade!</p>
+            {% endif %}
+            
+            {% if nextDispense %}
+              <div class="col-xs-12">
+                <div class="alert alert-danger" role="alert">
+                  <h3>The faucet will be ready again in: </h3>
+                  <div id="countdown"></div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            {% else %}
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <input type='text' id="address" name='address' class="form-control input-large" required="" placeholder='Enter your Bleutrade account name' value="" tabindex="1">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+
+              {% if error %}
+                <div class="form-group">
+                  <div class="col-xs-12">
+                    <div class="alert alert-danger" role="alert">
+                      {% if error == "BleutradeUserRequired" %}
+                        This faucet is desinged to work exclusively in conjunction with the secure, fast and reliable <a href="https://bleutrade.com/sign_up/{{settings.bleutradeAffiliateID}}">Bleutrade Exchange.</a>.  Please enter your <a href="https://bleutrade.com/sign_up/{{settings.bleutradeAffiliateID}}">Bleutrade</a> account name in the box provided.  If you do not yet have a <a href="https://bleutrade.com/sign_up/{{settings.bleutradeAffiliateID}}">Bleutrade</a> account.... What the hell are you wating for?  <a href="https://bleutrade.com/sign_up/{{settings.bleutradeAffiliateID}}"><em>SIGN UP NOW</em></a>, it only takes 25 seconds and you instantly get free coins to trade with!
+                      {% else %}
+                        {{error}}
+                      {% endif %}          
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              {% endif %}
+
+              <div id="recaptcha_area" class="form-group">
+                  {{recaptcha_form|raw}}
+              </div>
+              <div class="clearfix"></div>
+
+              <div class="form-group">
+                <input type='submit' class='btn btn-primary btn-block' value='Collect {{coinFaucet.currency}}'>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="banner">
+          <iframe data-aa='{{ settings.ads.anonymousAds.slots[0] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[0] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+        </div>
+
+        {% if success || nextDispense %}
+          <div class='well'>
+            <h2>Checkout our other <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">Bleutrade</a> Faucets</h2>
+            <table class="table table-striped table-condensed">
+              <thead>
+                <th class="text-center" tabindex="0" rowspan="1" colspan="1"></th>
+                <th class="text-center" tabindex="0" rowspan="1" colspan="1"></th>
+                <th class="text-center" tabindex="0" rowspan="1" colspan="1"></th>
+              </thead>
+              {% for coin in availableFunds %}
+                {% if loop.index0 % 3 == 0 %}
+                  <tr role="row">
+                    <td class="text-left"><a href="http://{{coin.currency}}.{{settings.site.domain}}"><img src="https://bleutrade.com/imgs/logos/{{coin.currency}}_32px.png">  {{coin.currency}}</a></td>
+
+                    {% if loop.revindex0 >= 1 %}
+                      <td class="text-left"><a href="http://{{availableFunds[loop.index0+1].currency}}.{{settings.site.domain}}"><img src="https://bleutrade.com/imgs/logos/{{availableFunds[loop.index0+1].currency}}_32px.png">  {{availableFunds[loop.index0+1].currency}}</a></td>
+                    {% endif %}
+
+                    {% if loop.revindex0 >= 2 %}
+                      <td class="text-left"><a href="http://{{availableFunds[loop.index0+2].currency}}.{{settings.site.domain}}"><img src="https://bleutrade.com/imgs/logos/{{availableFunds[loop.index0+2].currency}}_32px.png">  {{availableFunds[loop.index0+2].currency}}</a></td>
+                    {% endif %}
+
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </table>
+          </div>
+        {% endif %}
+
+        <div class="banner">
+          <iframe data-aa='{{ settings.ads.anonymousAds.slots[1] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[1] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+        </div>
+      
+    </form>

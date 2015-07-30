@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block meta %}
+  {% parent %}
+{% endblock %}
+
+{% block css %}
+  {% parent %}
+  {% if nextDispense %}<link rel="stylesheet" href="/css/jquery.countdown.css">{% endif %}
+{% endblock %}
+
+
+{% block body %}
+<div class='row-fluid'>
+  <div class='col-md-3'>
+    {% block left %}
+      {% include "partials/_left.html" %}
+    {% endblock %}
+  </div>
+
+  <div class='col-md-6'>
+    {% if nextDispense %}
+    <div class="col-xs-12">
+      <div class="alert alert-danger" role="alert">
+        <h3>The faucet will be ready again in: </h3>
+        <div id="countdown"></div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    {% endif %}
+
+    <div class="col-xs-12">
+      <div class="banner">
+        <center>
+          <iframe data-aa='{{ settings.ads.anonymousAds.slots[1] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[1] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+        </center>
+      </div>
+    </div>
+
+    <div class="col-xs-12">
+      <h1>TODO: Stats about your chosen coin</h1>
+    </div>
+
+    <div class="col-xs-12">
+      <div class="banner">
+        <center>
+          <iframe data-aa='{{ settings.ads.anonymousAds.slots[0] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[0] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+        </center>
+      </div>
+    </div>
+
+    <div class="col-xs-12">
+      <div class='well'>
+        <h2>More Fine Faucets and Friends</h2>
+        {% if settings.ads.affiliates %}
+          {% for affiliateType in settings.ads.affiliates %}
+            <h3>{{affiliateType.type}}</h3>
+            <center>
+              <p>
+                {% for affiliate in affiliateType.referrals %}
+                  <a href='{{affiliate.url}}' target='_blank' alt='{{affiliate.name}}' title='{{affiliate.name}}'>{% if affiliate.img %}<img src='{{affiliate.img}}' title="{{affiliate.description}}" alt="{{affiliate.description}}" />{% else %}<span style='color:orangered'>{{affiliate.name}} {{affiliate.description}}</span>{% endif %}</a><br />
+                {% endfor %}    
+              </p>
+            </center>
+          {% endfor %}
+        {% endif %}
+
+        {% if settings.ads.faucets %}
+          {% for coin in settings.ads.faucets %}
+            <h3>{{loop.key}} Faucets</h3>
+            <center>
+              <p>
+                {% for faucet in coin %}
+                  <a href='{{faucet.url}}' target='_blank' alt='{{faucet.name}}' title='{{faucet.name}}'><img src='{{faucet.img}}' title="{{faucet.description}}" alt="{{faucet.description}}"/></a><br />
+                {% endfor %}    
+              </p>
+            </center>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-xs-12">
+      <div class="banner">
+        <center>
+          <div>
+            <iframe scrolling="no" frameborder="0" style="overflow:hidden;width:468px;height:60px;" src="http://bee-ads.com/ad.php?id={{ settings.ads.beeads.slots[0] }}"></iframe>
+          </div>
+        </center>
+      </div>
+    </div>
+  </div>
+
+  <div class='col-md-3'>
+    {% block right %}
+      {% include "partials/_right.html" %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+  {% parent %}
+  {% if nextDispense %}
+    <script src="/js/jquery.plugin.js"></script>
+    <script src="/js/jquery.countdown.min.js"></script>
+    <script>
+      $(function() {
+        $('#countdown').countdown({until: new Date('{{nextDispense|date('r')}}'), expiryUrl: '/play',
+          format: 'yowdhms'}); 
+      });
+    </script>
+  {% endif %}
+{% endblock %}

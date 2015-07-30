@@ -1,0 +1,183 @@
+{% extends 'layout.html' %}
+
+{% block meta %}
+  {% parent %}
+{% endblock %}
+
+{% block css %}
+  {% parent %}
+  {% if nextDispense %}<link rel="stylesheet" href="/css/jquery.countdown.css">{% endif %}
+{% endblock %}
+
+
+{% block body %}
+<div class='container-fluid'>
+  <div class='row-fluid'>
+    <div class='col-md-3'>
+      {% block left %}
+        {% include "partials/_left.html" %}
+      {% endblock %}
+    </div>
+
+    <div class='col-md-6' style='z-index: 10000'>
+      <script>
+       var RecaptchaOptions = {theme : 'white'};
+      </script>
+
+      <div class="col-xs-12">
+        <h1>Your Winnings!</h1>
+        <table class="table table-striped table-bordered dataTable no-footer"role="grid">
+          <thead>
+            <tr role="row">
+              <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 37px;"></th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 61px;">Symbol</th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 150px;">Winnings</th>
+              
+              <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 37px;"></th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 61px;">Symbol</th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 150px;">Winnings</th>
+
+              <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 37px;"></th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 61px;">Symbol</th>
+              <th class="text-center sorting" tabindex="0" aria-controls="my_wallet_tabela_01" rowspan="1" colspan="1" style="width: 150px;">Winnings</th>
+            </tr>        
+          </thead>
+          <tbody>
+              {% for coin in payouts %}
+                {% if loop.index0 % 3 == 0 %}
+                  <tr role="row">
+                    <td class="text-center "><img src="https://bleutrade.com/imgs/logos/{{coin.currency}}_32px.png"></td>
+                    <td>{{coin.currency}}</td>
+                    <td class="text-right">{{coin.amt|cryptoRound}}</td>
+
+                    {% if loop.revindex0 >= 1 %}
+                      <td class="text-center "><img src="https://bleutrade.com/imgs/logos/{{payouts[loop.index0+1].currency}}_32px.png"></td>
+                      <td>{{payouts[loop.index0+1].currency}}</td>
+                      <td class="text-right">{{(payouts[loop.index0+1].amt)|cryptoRound}}</td>
+                    {% endif %}
+
+                    {% if loop.revindex0 >= 2 %}
+                      <td class="text-center "><img src="https://bleutrade.com/imgs/logos/{{payouts[loop.index0+2].currency}}_32px.png"></td>
+                      <td>{{payouts[loop.index0+2].currency}}</td>
+                      <td class="text-right">{{(payouts[loop.index0+2].amt)|cryptoRound}}</td>
+                    {% endif %}
+                  </tr>
+                {% endif %}
+              {% endfor %}    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-xs-12">
+        <div class="banner">
+          <center>
+            <div>
+              <iframe scrolling="no" frameborder="0" src="{{ settings.ads.adbit.slots[0] }}" style="overflow:hidden;width:468px;height:60px;"></iframe>
+            </div>
+          </center>
+        </div>
+      </div>
+
+      {% if nextDispense %}
+        <div class="col-xs-12">
+          <div class="alert alert-danger" role="alert">
+            <h3>This faucet will only payout every {{settings.payout.frequency}} minutes.</h3>
+            <h3>You will be able to claim your prize again in about:</h3>
+            <div id="countdown"></div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      {% else %}
+        <div class="col-xs-12">
+          <form action='/pay' method='POST'>
+            <div class='well'>
+              <h2>Almost there.  To collect we need 2 things</h2>
+              <h3>Your <a href="https://bleutrade.com/home/{{settings.bleutradeAffiliateID}}">BleuTrade</a> username</h3>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <input type='text' id="username" name='username' class="form-control input-large" required="" placeholder='Enter your Bleutrade Username' value="" tabindex="1">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+
+              {% if error %}
+                <div class="form-group">
+                  <div class="col-xs-12">
+                    <div class="alert alert-danger" role="alert">{{error}}</div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              {% endif %}
+              <h3>And proof that you're human</h3>
+              <center>
+                <div id="recaptcha_area" class="form-group">
+                  {{recaptcha_form|raw}}
+                </div>
+              <center>
+              <div class="clearfix"></div>
+
+              <div class="banner">
+                <iframe data-aa='{{ settings.ads.anonymousAds.slots[0] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[0] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+              </div>
+
+              <div class="form-group">
+                <input type='submit' class='btn btn-primary btn-block' value='Collect {{settings.site.coin.shortName}}'>
+              </div>
+
+              <div class="banner">
+                <iframe data-aa='{{ settings.ads.anonymousAds.slots[1] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[1] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      {% endif %}
+
+      <div class="col-xs-12">
+        <div class="banner">
+          <center>
+            <div>
+              <iframe scrolling="no" frameborder="0" style="overflow:hidden;width:468px;height:60px;" src="http://bee-ads.com/ad.php?id={{ settings.ads.beeads.slots[0] }}"></iframe>
+            </div>
+          </center>
+        </div>
+      </div>
+    </div>
+    
+    <div class='col-md-3'>
+      {% block right %}
+        {% include "partials/_right.html" %}
+      {% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+﻿
+
+
+{% block script %}
+  {% parent %}
+  {% if settings.payout.adblockPenalty %}
+    <script src="/js/advertisement.js"></script>
+    <script>
+      $(function() {
+        $('#adblockdetection').val($('#tester').length);
+        if ($('#tester').length == 0) $('#adblockWarning').show();
+      });
+    </script>
+  {% endif %}
+
+  {% if nextDispense %}
+    <script src="/js/jquery.plugin.js"></script>
+    <script src="/js/jquery.countdown.min.js"></script>
+    <script>
+      $(function() {
+        $('#countdown').countdown({until: new Date('{{nextDispense|date('r')}}'), expiryUrl: '/play',
+          format: 'yowdhms'}); 
+      });
+    </script>
+  {% endif %}
+{% endblock %}

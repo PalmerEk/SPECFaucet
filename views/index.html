@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+
+{% block meta %}
+  {% parent %}
+{% endblock %}
+
+{% block css %}
+  {% parent %}
+{% endblock %}
+
+{% block body %}
+  <div class='row-fluid'>
+    <div class="col-xs-3 leftcol">
+      {% block left %}
+        {% include "partials/_left.html" %}
+      {% endblock %}
+    </div>
+
+    <div class="col-xs-9 col-md-6 midcol">
+      <h1>{{ settings.site.name }}</h1>
+
+      {% if settings.payoutSingleCoin.adblockPenalty %}
+        <div id="adblockWarning" class='form-group' style="display:none">
+          <div class="col-xs-12 alert alert-danger" role="alert">
+            <h3>Ad Blocker Detected!</h3>
+            <p><strong>We get it.</strong>  Ads can get annoying, but where do you think the coins for this faucet come from?  Sure we donate coins from our own pockets and occasionally may recieve a donation, but we simply <strong>can't afford</strong> to give away as <i>many</i> coins as we do without the help of our partners.</p><br />
+            <p><strong>So here's the deal</strong>: If you want to block our ads that's <strong>fine</strong>, we will still dispense some coins for you to play with and help introduce you to the fantastic <strong>{{coinFaucet.currency}}</strong> community, <strong>HOWEVER</strong> in an effort to keep the faucet on, we will decrease the amount of coins we award you by <strong>{{settings.payoutSingleCoin.adblockPenalty}}%</strong></p><br />
+            <p>If you want <strong>more coins</strong> then <strong>please consider disabling your ad-blocking software or adding us to your exception list</strong> and <a href="/">refreshing the page</a>.</p><br />
+            <p>With your help we can take these reward levels <strong>To Da Moon!</string></p>
+          </div>
+          <input type='text' id="adblockdetection" name="adblockdetection" hidden value="1" />
+        </div>
+      {% endif %}
+
+      <p>Instant payout</p>
+        <form id="faucet" action="/submit" method="POST" role="form" class="form-inline">
+          <input type="hidden" name="_csrf" value="TiJkDC4u-HMoG6PdeNAajD9Hn7YjF-zme9PU">
+          <fieldset>
+              <div class="form-group">
+                  <label for="txtAddress" class="sr-only">Enter your SPECcoin address</label>
+                  <input id="txtAddress" type="text" name="address" placeholder="SPECcoin address" class="form-control">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <div id="captcha"></div>
+          </fieldset>
+      </form>
+
+
+    <script>
+     var RecaptchaOptions = {theme : 'white'};
+    </script>
+
+    
+    </div>
+    
+    <div class="col-xs-12 col-md-3 rightcol">
+      {% block right %}
+        {% include "partials/_right.html" %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  {% parent %}
+  {% if settings.payout.adblockPenalty %}
+    <script src="/js/advertisement.js"></script>
+    <script>
+      $(function() {
+        $('#adblockdetection').val($('#tester').length);
+        if ($('#tester').length == 0) $('#adblockWarning').show();
+      });
+    </script>
+  {% endif %}
+
+  {% if nextDispense %}
+    <script src="/js/jquery.plugin.js"></script>
+    <script src="/js/jquery.countdown.min.js"></script>
+    <script>
+      $(function() {
+        $('#countdown').countdown({until: new Date('{{nextDispense|date('r')}}'), expiryUrl: '/',
+          format: 'yowdhms'}); 
+      });
+    </script>
+  {% endif %}
+{% endblock %}
