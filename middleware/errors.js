@@ -3,9 +3,6 @@ var path = require('path')
 	, util = require('util');
 
 var app = module.exports = express();
-var settings = require('../settings')
-
-var log = require('../lib/logger');
 
 app.set('views', path.resolve(__dirname, '../views/errors'));
 

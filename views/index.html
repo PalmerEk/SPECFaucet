@@ -19,12 +19,12 @@
     <div class="col-xs-9 col-md-6 midcol">
       <h1>{{ settings.site.name }}</h1>
 
-      {% if settings.payoutSingleCoin.adblockPenalty %}
+      {% if settings.payout.adblockPenalty %}
         <div id="adblockWarning" class='form-group' style="display:none">
           <div class="col-xs-12 alert alert-danger" role="alert">
             <h3>Ad Blocker Detected!</h3>
             <p><strong>We get it.</strong>  Ads can get annoying, but where do you think the coins for this faucet come from?  Sure we donate coins from our own pockets and occasionally may recieve a donation, but we simply <strong>can't afford</strong> to give away as <i>many</i> coins as we do without the help of our partners.</p><br />
-            <p><strong>So here's the deal</strong>: If you want to block our ads that's <strong>fine</strong>, we will still dispense some coins for you to play with and help introduce you to the fantastic <strong>{{coinFaucet.currency}}</strong> community, <strong>HOWEVER</strong> in an effort to keep the faucet on, we will decrease the amount of coins we award you by <strong>{{settings.payoutSingleCoin.adblockPenalty}}%</strong></p><br />
+            <p><strong>So here's the deal</strong>: If you want to block our ads that's <strong>fine</strong>, we will still dispense some coins for you to play with and help introduce you to the fantastic <strong>SPEC</strong> community, <strong>HOWEVER</strong> in an effort to keep the faucet on, we will decrease the amount of coins we award you by <strong>{{settings.payout.adblockPenalty}}%</strong></p><br />
             <p>If you want <strong>more coins</strong> then <strong>please consider disabling your ad-blocking software or adding us to your exception list</strong> and <a href="/">refreshing the page</a>.</p><br />
             <p>With your help we can take these reward levels <strong>To Da Moon!</string></p>
           </div>
@@ -32,25 +32,64 @@
         </div>
       {% endif %}
 
-      <p>Instant payout</p>
-        <form id="faucet" action="/submit" method="POST" role="form" class="form-inline">
-          <input type="hidden" name="_csrf" value="TiJkDC4u-HMoG6PdeNAajD9Hn7YjF-zme9PU">
+      <p>
+        <h3>Free SPEC!</h3>
+        <p>SPEC is the native house token of <a href="https://www.cryptowatcher.com/">CryptoWatcher.com</a> allowing trading enthusiasts to watch thee top 5 exchanges from one singular location.</p>
+      </p>
+      {% if nextDispense %}
+        <div class='well'>
+          <div class="col-xs-12">
+            <div class="alert alert-danger" role="alert">
+              <h3>The faucet will be ready again in: </h3>
+              <div id="countdown"></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <form id="faucet" action="/" method="POST" role="form" class="form-inline">
+          <input type="hidden" name="_csrf" value="{{ csrftoken }}">
+          {% if error %}
+            <fieldset>
+                <div class="form-group">
+                  <div class="alert alert-danger" role="alert">
+                    {{error}}
+                  </div>
+                </div>
+            </fieldset>
+          {% endif %}
+
           <fieldset>
               <div class="form-group">
-                  <label for="txtAddress" class="sr-only">Enter your SPECcoin address</label>
-                  <input id="txtAddress" type="text" name="address" placeholder="SPECcoin address" class="form-control">
+                  <label for="address" class="sr-only">Enter your SPECcoin address</label>
+                  <input id="address" type="text" name="address" placeholder="SPECcoin address" class="form-control input-large" required="" tabindex="1" />
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-              <div id="captcha"></div>
           </fieldset>
-      </form>
 
+          <fieldset>
+              <label for="recaptcha_area" class="sr-only">Please prove you are human</label>
+              <div id="recaptcha_area" class="form-group">
+                    {{recaptcha_form|raw}}
+              </div>
+          </fieldset>
+          
+          {% if settings.ads && settings.ads.anonymousAds && settings.ads.anonymousAds.slots && settings.ads.anonymousAds.slots[0] %}
+          <div class="banner">
+            <iframe data-aa='{{ settings.ads.anonymousAds.slots[0] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[0] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+          </div>
+          {% endif %}
 
-    <script>
-     var RecaptchaOptions = {theme : 'white'};
-    </script>
+          <fieldset>
+              <button type="submit" class="btn btn-primary btn-block">Collect SPEC</button>
+          </fieldset>
 
-    
+          {% if settings.ads && settings.ads.anonymousAds && settings.ads.anonymousAds.slots && settings.ads.anonymousAds.slots[1] %}
+          <div class="banner">
+            <iframe data-aa='{{ settings.ads.anonymousAds.slots[1] }}' src='//ad.a-ads.com/{{ settings.ads.anonymousAds.slots[1] }}?size=468x60' scrolling='no' style='width:468px; height:60px; border:0px; padding:0;overflow:hidden' allowtransparency='true'></iframe>
+          </div>
+          {% endif %}
+        </form>
+      {% endif %}
     </div>
     
     <div class="col-xs-12 col-md-3 rightcol">

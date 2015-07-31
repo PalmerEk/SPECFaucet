@@ -4,7 +4,6 @@ var path = require('path')
 	, url = require('url');
 
 var app = module.exports = express();
-var settings = require('../settings')
 
 var _ = require('underscore');
 _.s = require('underscore.string');
@@ -17,23 +16,22 @@ app.all('*', setGlobals, setDefaults);
 var day = (24*60*60*1000);
 var cookieLife = {maxAge: (day*360), expires: new Date(Date.now() + (day*360))};
 
-var coinRPC = require('node-dogecoin')()
-		.set('host', settings.rpc.host)
-		.set('port', settings.rpc.port)
-		.auth(settings.rpc.user, settings.rpc.pass);
-
 function setGlobals(req, res, next){
 	res.locals.settings = settings;
 	res.locals.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	res.locals.now = new Date();
+	res.locals.csrftoken = req.csrfToken();
 
 	res.locals.payoutRange = {min: settings.payout.bracket[0].amt, max: settings.payout.bracket[settings.payout.bracket.length-1].amt};  	
-	res.locals.address = _.isUndefined(req.cookies.get('lastAddress')) ? '' : req.cookies.get('lastAddress')
+	res.locals.address = _.isUndefined(req.cookies.lastAddress) ? '' : req.cookies.lastAddress
 
 	coinRPC.getBalance(function(err, balance) {
-		console.log(balance);
 		res.locals.faucetBalance = balance;
-		next();
+
+		coinRPC.getaccountaddress(settings.rpc.account || "faucetDonations", function(err, accountAddr) {
+			res.locals.donationAddr = accountAddr;
+			next();
+		});
 	});
 };
 

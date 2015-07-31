@@ -5,11 +5,17 @@ var express = require('express.io')
   , util = require('util')
   , Cookies = require( "cookies" );
 
-var settings = require('./settings')
-  , log = require('./lib/logger');
-
 var env = process.env.NODE_ENV || 'development';
 var app = module.exports = express();
+
+// globals
+settings = require('./settings')
+, log = require('./lib/logger')
+, db = require('./lib/db')
+, coinRPC = require('node-dogecoin')()
+    .set('host', settings.rpc.host)
+    .set('port', settings.rpc.port)
+    .auth(settings.rpc.user, settings.rpc.pass);
 
 // setup SWIG
 var VIEWS_DIR = path.join(__dirname, 'views');
@@ -33,9 +39,12 @@ app.set('views', VIEWS_DIR);
 
 app.use(require('serve-favicon')(path.join(__dirname, 'public/img/favicon.ico')));
 app.use(express.bodyParser());
-app.use(require('method-override')());
-app.use(Cookies.express(settings.session.key));
-app.use(require('serve-static')(path.join(__dirname, 'public')));
+
+app.use(express.cookieParser());
+app.use(express.session({ secret: settings.session.key }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.csrf());
+//app.use(Cookies.express(settings.session.key));
 app.use('/components', require('serve-static')(path.join(__dirname, 'bower_components')));
 
 if(env = 'development'){
@@ -43,9 +52,6 @@ if(env = 'development'){
 } else {
   app.use(require('errorhandler')());
 };
-
-//var BackgroundTasks = new require('./middleware/background');
-//BackgroundTasks.setOpts({app: app, key: 'availableFunds'});
 
 // Routes
 app.get('/ping', function(req,res) {return res.send(200);} );
@@ -55,8 +61,6 @@ app.use(require('./middleware/routes'));
 // Must be last (catchall)
 app.use(require('./middleware/errors'));
 
-//BackgroundTasks.updateAvailableFunds(function(err, availableFunds) {
-  http.createServer(app).listen(app.get('port'), function(){
-    console.log("Express server listening on port " + app.get('port'));
-  });
-//})
+http.createServer(app).listen(app.get('port'), function(){
+  console.log("SPEC Faucet Server listening on port " + app.get('port'));
+});

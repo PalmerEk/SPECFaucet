@@ -7,10 +7,7 @@
 }
 
 
-h1 {
-
-}
-.midcol,.dashboard {
+.midcol {
 	text-align:center;
 }
 .midcol p {
@@ -18,10 +15,7 @@ h1 {
 	text-align:left;
 	padding:6px 6px 10px 6px;
 }
-.login {
-	width:400px;
-	margin:auto;
-}
+
 #txtAddress {
 	margin-right:10px;
 	min-width:350px;
@@ -34,6 +28,7 @@ h1 {
 	padding-right:4px;
 	color:#999999;
 }
+
 .payouts h4 {
 	color:#3498db;
 }
@@ -43,10 +38,4 @@ h1 {
 .payouts ul {
 	list-style-type: none;
 	padding-left:4px;
-}
-.address-report ul {
-	list-style-type: none;
-}
-.address-report label {
-	padding-right:6px;
 }

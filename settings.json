@@ -15,9 +15,6 @@
 		,"port":4320
 		,"user":"q9eBtox9fSXrjiMNexa8lcEU2YBGjS"
 		,"pass":"TOFkgQ3QaTDNMJLussnRJf8QG8dnLM"
-		,"timeout":30000
-		,"ssl":false
-		,"sslStrict":false
 		,"account":"faucet"
 	}
 
@@ -25,6 +22,12 @@
 	    "secret": "5ecretsR4Bi0tches",
 	    "key": "SPECFaucet"
 	 },
+
+  "recaptcha": {
+    "key": "6LfTFwITAAAAAOtAwS-HZXl-lnLR2OpTIUXU_mOg",
+    "secret": "6LfTFwITAAAAAI64f-Sys33TDFrQL7nPybT0KE8Z"
+  },
+  
 	"googleAnalytics": "UA-20273012-7"
 
 	,"ads": {
@@ -129,17 +132,17 @@
     "referralPct": 25,
     "adblockPenalty": 90,
     "bracket": [
-      {"pct": 0.0001,"odds": 25.0},
-      {"pct": 0.0002,"odds": 25.0},
-      {"pct": 0.0003,"odds": 15.0},
-      {"pct": 0.0004,"odds": 15.0},
-      {"pct": 0.0005,"odds": 10.0},
-      {"pct": 0.0006,"odds": 5.0},
-      {"pct": 0.0007,"odds": 4.0},
-      {"pct": 0.0008,"odds": 0.5},
-      {"pct": 0.0009,"odds": 0.45},
-      {"pct": 0.001,"odds": 0.04},
-      {"pct": 0.0025, "odds": 0.01}
+      {"pct": 0.01,"odds": 25.0},
+      {"pct": 0.02,"odds": 25.0},
+      {"pct": 0.03,"odds": 15.0},
+      {"pct": 0.04,"odds": 15.0},
+      {"pct": 0.05,"odds": 10.0},
+      {"pct": 0.06,"odds": 5.0},
+      {"pct": 0.07,"odds": 4.0},
+      {"pct": 0.08,"odds": 0.5},
+      {"pct": 0.09,"odds": 0.45},
+      {"pct": 0.1,"odds": 0.04},
+      {"pct": 0.25, "odds": 0.01}
     ]
   }
 
