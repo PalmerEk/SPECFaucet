@@ -6,6 +6,7 @@
 
 {% block css %}
   {% parent %}
+  {% if nextDispense %}<link rel="stylesheet" href="/css/jquery.countdown.css">{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -37,13 +38,10 @@
         <p>SPEC is the native house token of <a href="https://www.cryptowatcher.com/">CryptoWatcher.com</a> allowing trading enthusiasts to watch thee top 5 exchanges from one singular location.</p>
       </p>
       {% if nextDispense %}
-        <div class='well'>
-          <div class="col-xs-12">
-            <div class="alert alert-danger" role="alert">
-              <h3>The faucet will be ready again in: </h3>
-              <div id="countdown"></div>
-              <div class="clearfix"></div>
-            </div>
+        <div class="col-xs-12">
+          <div class="alert alert-danger" role="alert">
+            <h3>The faucet will be ready again in: </h3>
+            <div id="countdown"></div>
           </div>
         </div>
       {% else %}

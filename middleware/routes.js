@@ -19,7 +19,8 @@ var CryptoMath = require('../lib/CryptoMath');
 app.set('views', path.resolve(__dirname, '../views'));
 
 app.get('/', captureReferrer, validateFrequency, showFaucet);
-app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense, showFaucet);
+//app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense, showFaucet);
+app.post('/', validateAddress, validateFrequency, dispense, showFaucet);
 
 
 var day = (24*60*60*1000);
@@ -52,7 +53,6 @@ function showFaucet(req, res, next) {
 }
 
 function validateCaptcha(req, res, next) {
-	console.log('validating captcha')
 	var data = {
         remoteip:  res.locals.ip,
         response: req.body['g-recaptcha-response'],
@@ -85,19 +85,14 @@ function validateAddress(req, res, next) {
 
 function validateFrequency(req, res, next) {
 	// TODO:
-	db.getTimeUntilNextDispence(res.locals.address, res.locals.ip, function(err, secondsLeft) {
-
-	});
-	next();
-	/*
-	db.getTimeUntilNextDispence(res.locals.address, res.locals.ip, function(err, row, fields) {
-		if(row) {
-			res.locals.error = "Too Soon!  Come back in " + row.remainingTime;
-			res.locals.nextDispense = row.nextDispense;
+	db.getTimeUntilNextDispense(res.locals.address, res.locals.ip, function(err, lastDispense) {
+		var lastDispenseMinutesAgo = (((res.locals.now - lastDispense) / 1000) / 60);
+		if(lastDispenseMinutesAgo < settings.payout.frequency) {
+			res.locals.error = "Too Soon!  Come back in " + settings.payout.frequency - lastDispenseMinutesAgo + " minutes";
+			res.locals.nextDispense = res.locals.now + ((settings.payout.frequency - lastDispenseMinutesAgo) * 60 * 1000);
 		}
 		next();
 	});
-	*/
 }
 
 function dispense(req, res, next) {
@@ -119,63 +114,29 @@ function dispense(req, res, next) {
 			break;
 		}
 	}
-	next();
-/*
-	db.dispense(res.locals.address, res.locals.ip, res.locals.dispenseAmt, res.locals.referrer, function(err, success) {
-		res.locals.success = success;
 
-		if(success) {
-			db.getUserBalance(res.locals.address, function(err, balance) {
-				res.locals.userBalance = balance;
-				next();
-			});
-		} else {
+	res.locals.referalDispenseAmt = res.locals.referrer ? res.locals.dispenseAmt * (referralPct/100)  : 0;
+	
+	// Pay the man
+	sendPayment(res.locals.address, res.locals.dispenseAmt, '', '', function(err, txid) {
+		if(err) {
 			res.locals.error = "Error dispenseing, please try again."
-			next()
+			return next();
 		}
-	});
-*/
-/*
-	db.users.find({$or: [{key:req.ip},{key:req.body.address}] },function(err,users){
-			if (err) {
-				//Error!
-				console.log('Database error',err);
-				_failure(req,res,'Database error');
-				return;
-			} else if (users && _limitExceeded(users)) {
-				//User exists by IP or coin address and one or the other has exceeded the max # of entries
-				console.log('User exceeded limit',req.ip,req.body.address);
-				_failure(req,res,'You have exceeded your limit');
-				return;
-			}
-			// Now see if the address is valid
-			client.validateAddress(req.body.address,function(err,response){
-					console.log('validateAddress',req.body.address,response);
-					if (err) {
-						//Error
-						console.log(err);
-						_failure(req,res,'Unable to validate address');
-					} else if (!iz.required(response.isvalid) || response.isvalid === false) {
-						//Invalid
-						_failure(req,res,'Please enter a valid address');
-					} else {
-						//Address is valid. Queue this entry.
-						processor.queue(req.ip,req.body.address,function(err,result){
-							if (err) {
-								//Error
-								console.log('Database error',err);
-								_failure(req,res,'Failed to create record');
-							} else {
-								// Yay! User is now entered in the queue.
-								_success(req,res,'You are now entered!');
-							}
-						});
-					}
-				});
 
-			
+		// and the man's man if need be
+		sendPayment(res.locals.referrer, res.locals.referalDispenseAmt, 'referal payment', res.locals.address, function(err, refTxid) {
+			db.recordDispense(res.locals.address, res.locals.ip, res.locals.dispenseAmt, txid, res.locals.referrer, refTxid, function(err, Txn) {
+				next();
+			})
 		});
-*/
+	});
 }
 
+function sendPayment(addr, amt, comment, commentTo, callback) {
+	callback = callback || function () {};
 
+	if(amt <= 0) return callback(null, null);
+
+	coinRPC.sendtoaddress(addr, amt, comment, commentTo, callback);
+}
