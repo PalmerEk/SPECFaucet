@@ -13,14 +13,15 @@ var app = module.exports = express();
 var _ = require('underscore');
 _.s = require('underscore.string');
 _.mixin(_.s.exports());
+var moment = require('moment');
 
 var CryptoMath = require('../lib/CryptoMath');
 
 app.set('views', path.resolve(__dirname, '../views'));
 
 app.get('/', captureReferrer, validateFrequency, showFaucet);
-//app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense, showFaucet);
-app.post('/', validateAddress, validateFrequency, dispense, showFaucet);
+//app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense);
+app.post('/', validateAddress, validateFrequency, dispense, showFaucetPRG);
 
 
 var day = (24*60*60*1000);
@@ -50,6 +51,15 @@ function showFaucet(req, res, next) {
 	res.render("index", {
 		recaptcha_form: nocaptcha.toHTML()
 	});
+}
+
+// Post-Redirect-Get
+function showFaucetPRG(req, res, next) {
+	if(res.locals.error) {
+		showFaucet(req, res, next);
+	} else {
+		res.redirect('/');
+	}
 }
 
 function validateCaptcha(req, res, next) {
@@ -86,11 +96,12 @@ function validateAddress(req, res, next) {
 function validateFrequency(req, res, next) {
 	// TODO:
 	db.getTimeUntilNextDispense(res.locals.address, res.locals.ip, function(err, lastDispense) {
-		var lastDispenseMinutesAgo = (((res.locals.now - lastDispense) / 1000) / 60);
-		if(lastDispenseMinutesAgo < settings.payout.frequency) {
-			res.locals.error = "Too Soon!  Come back in " + settings.payout.frequency - lastDispenseMinutesAgo + " minutes";
-			res.locals.nextDispense = res.locals.now + ((settings.payout.frequency - lastDispenseMinutesAgo) * 60 * 1000);
+		var nextDispense = moment(lastDispense || 0).add(settings.payout.frequency, 'minutes');
+		if(moment().isBefore(nextDispense)) {
+			res.locals.nextDispense = nextDispense;
+			res.locals.error = "Too Soon!  Come back in " + moment(res.locals.nextDispense).fromNow();
 		}
+
 		next();
 	});
 }
@@ -124,7 +135,7 @@ function dispense(req, res, next) {
 			return next();
 		}
 
-		// and the man's man if need be
+		// and the man's man if need be (in the background)
 		sendPayment(res.locals.referrer, res.locals.referalDispenseAmt, 'referal payment', res.locals.address, function(err, refTxid) {
 			db.recordDispense(res.locals.address, res.locals.ip, res.locals.dispenseAmt, txid, res.locals.referrer, refTxid, function(err, Txn) {
 				next();
