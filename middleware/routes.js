@@ -20,8 +20,7 @@ var CryptoMath = require('../lib/CryptoMath');
 app.set('views', path.resolve(__dirname, '../views'));
 
 app.get('/', captureReferrer, validateFrequency, showFaucet);
-//app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense);
-app.post('/', validateAddress, validateFrequency, dispense, showFaucetPRG);
+app.post('/', validateCaptcha, validateAddress, validateFrequency, dispense, showFaucet);
 
 
 var day = (24*60*60*1000);
@@ -51,15 +50,6 @@ function showFaucet(req, res, next) {
 	res.render("index", {
 		recaptcha_form: nocaptcha.toHTML()
 	});
-}
-
-// Post-Redirect-Get
-function showFaucetPRG(req, res, next) {
-	if(res.locals.error) {
-		showFaucet(req, res, next);
-	} else {
-		res.redirect('/');
-	}
 }
 
 function validateCaptcha(req, res, next) {
@@ -134,6 +124,10 @@ function dispense(req, res, next) {
 			res.locals.error = "Error dispenseing, please try again."
 			return next();
 		}
+
+		res.locals.success = true;
+		res.locals.txid = txid;
+		res.locals.nextDispense = moment().add(settings.payout.frequency, 'minutes');
 
 		// and the man's man if need be (in the background)
 		sendPayment(res.locals.referrer, res.locals.referalDispenseAmt, 'referal payment', res.locals.address, function(err, refTxid) {

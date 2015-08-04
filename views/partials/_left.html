@@ -8,7 +8,7 @@
           </thead>
           {% for payout in settings.payout.bracket %}
             <tr>
-              <td><em>{{(payout.pct*faucetBalance)|humanizeCrypto}}</em>&#160&#160SPEC</td>
+              <td><em>{{payout.amt|humanizeCrypto}}</em>&#160&#160SPEC</td>
               <td>{{ payout.odds }}%</td>
             </tr>
           {% endfor %}
