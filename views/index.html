@@ -22,10 +22,11 @@
 
       {% if success %}
         <div class="col-xs-12 alert alert-success" role="alert">
-          <div>You've been awarded {{dispenseAmt}} SPEC!  (TXID: {{txid}})_</div></br>
+          <h3>You've been awarded {{dispenseAmt}} SPEC!</h3>
+          <div>Transaction ID: <a href="https://blockexperts.com/spec/tx/{{txid}}">{{txid}}</a></div>
           
-          {% if settings.referralPct > 0 %}
-            <div>Earn {{settings.referralPct}}% of anyone you refer: <a href="{{referralURL}}">http://{{referralURL}}</a></div></br>
+          {% if settings.payout.referralPct > 0 %}
+            <br/><div>Earn {{settings.payout.referralPct}}% of anyone you refer: <br/><a href="http://{{referralURL}}">http://{{referralURL}}</a></div><br/>
           {% endif %}
         </div>
 
@@ -33,7 +34,7 @@
           <div class="col-xs-12">
             <div class="alert alert-info" role="alert">
               <h3>The faucet will be ready again in: </h3>
-              <div id="countdown"></div>
+              <span id="countdown"></span>
             </div>
           </div>
         {% endif %}

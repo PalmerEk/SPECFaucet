@@ -6,8 +6,8 @@
 	,"site": {
 	    "name": "Whoville SPEC Faucet",
 	    "subtitle": "A SPEC is a SPEC no matter how small",
-	    "url": "",
-	    "domain": ""
+	    "url": "http://www.whoville.com",
+	    "domain": "whoville.com"
   	}
 
 	,"rpc":{

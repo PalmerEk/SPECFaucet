@@ -28,7 +28,7 @@ var cookieLife = {maxAge: (day*360), expires: new Date(Date.now() + (day*360))};
 
 function captureReferrer(req, res, next) {
   // If we were referred and we don't already have a referrer, set it. 
-  if(req.query.r && (settings.payout.referralPct > 0 || settings.payoutSingleCoin.referralPct > 0)  && _.isUndefined(req.cookies.referrer)) {
+  if(req.query.r && (settings.payout.referralPct > 0)  && _.isUndefined(req.cookies.referrer)) {
   	var referrer = _.s.trim(req.query.r);
 
   	coinRPC.validateaddress(referrer, function(err, info) {
@@ -73,7 +73,7 @@ function validateAddress(req, res, next) {
 		var isValid = info && info.isvalid;
 		res.addressValid = isValid;
 
-		res.locals.referralURL = util.format('%s?r=%s', settings.site.url, res.locals.address);
+		res.locals.referralURL = util.format('%s?r=%s', req.headers.host, res.locals.address);
 		if(isValid) {
 			res.cookie('lastAddress', res.locals.address, cookieLife);
 		} else {
@@ -116,7 +116,7 @@ function dispense(req, res, next) {
 		}
 	}
 
-	res.locals.referalDispenseAmt = res.locals.referrer ? res.locals.dispenseAmt * (referralPct/100)  : 0;
+	res.locals.referalDispenseAmt = _.isUndefined(req.cookies.referrer) ? 0 : res.locals.dispenseAmt * (settings.payout.referralPct/100) ;
 	
 	// Pay the man
 	sendPayment(res.locals.address, res.locals.dispenseAmt, '', '', function(err, txid) {
@@ -130,8 +130,8 @@ function dispense(req, res, next) {
 		res.locals.nextDispense = moment().add(settings.payout.frequency, 'minutes');
 
 		// and the man's man if need be (in the background)
-		sendPayment(res.locals.referrer, res.locals.referalDispenseAmt, 'referal payment', res.locals.address, function(err, refTxid) {
-			db.recordDispense(res.locals.address, res.locals.ip, res.locals.dispenseAmt, txid, res.locals.referrer, refTxid, function(err, Txn) {
+		sendPayment(req.cookies.referrer, res.locals.referalDispenseAmt, 'referal payment', res.locals.address, function(err, refTxid) {
+			db.recordDispense(res.locals.address, res.locals.ip, res.locals.dispenseAmt, txid, req.cookies.referrer, refTxid, function(err, Txn) {
 				next();
 			})
 		});
